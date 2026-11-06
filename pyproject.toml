@@ -1,0 +1,28 @@
+[project]
+name = "nyc-taxi-lakehouse"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Shadman Arko", email = "35429182+shadmanArko@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "dbt-duckdb>=1.11.1",
+    "duckdb>=2.0.0",
+    "pandas>=3.1.1",
+    "pyarrow>=26.0.1",
+    "requests>=2.34.2",
+]
+
+[project.scripts]
+nyc-taxi-lakehouse = "nyc_taxi_lakehouse:main"
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
