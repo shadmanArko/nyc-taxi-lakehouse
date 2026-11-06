@@ -18,3 +18,8 @@ Store original files unmodified at `s3://<bucket>/landing/green_taxi/year=YYYY/m
 - Full replay and audit capability.
 - Small storage cost (pennies at this volume).
 - Adds an extra hop to the load path.
+
+## Amendment 2026-11-06
+Implemented in `infra/terraform/main.tf` with **SSE-S3 (AES256)** instead of SSE-KMS. KMS keys cost money and add key-policy work for Databricks, while SSE-S3 gives the same encryption at rest for this project. Public access is fully blocked and versioning is on. Revisit KMS if the data becomes sensitive.
+
+Also: the upload step skips a key that already exists, which enforces "never overwritten". The SHA-256 is currently printed by the download step but not stored; storing it is still to do.
