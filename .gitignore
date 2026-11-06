@@ -13,3 +13,5 @@ logs/
 data/
 .idea/
 .vscode/
+airflow/logs/
+airflow/*.db
