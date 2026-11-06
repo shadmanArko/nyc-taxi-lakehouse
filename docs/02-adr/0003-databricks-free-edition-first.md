@@ -1,6 +1,6 @@
 # ADR-0003: Databricks Free Edition first, upgrade path kept
 
-- Status: Accepted (spike completed 2026-11-06; two points still unverified, listed below)
+- Status: Accepted (spike completed 2026-11-06; three points still unverified, listed below)
 - Date: 2026-11-05, updated 2026-11-06
 - Deciders: Shadman Arko
 
