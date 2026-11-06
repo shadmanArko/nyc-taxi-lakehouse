@@ -1,0 +1,34 @@
+name: CI
+
+# Run on every push to main and on every pull request.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Get the code onto the machine.
+      - uses: actions/checkout@v4
+
+      # 2. Install uv (our package manager), pinned to the same version as the Dockerfile.
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.13.6"
+
+      # 3. Install exactly the versions in uv.lock (same Python and libraries as on your laptop).
+      - run: uv sync --frozen
+
+      # 4. Unit tests for the Python code.
+      - run: uv run pytest -q
+
+      # 5. Run the pipeline for real: download -> Bronze.
+      - run: uv run python -m nyc_taxi_lakehouse.download
+      - run: uv run python -m nyc_taxi_lakehouse.load_bronze
+
+      # 6. dbt builds Silver and Gold and runs all 12 data tests. Any failed test fails the CI.
+      - run: uv run dbt build --profiles-dir .
+        working-directory: dbt
