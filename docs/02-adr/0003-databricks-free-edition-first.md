@@ -1,7 +1,7 @@
 # ADR-0003: Databricks Free Edition first, upgrade path kept
 
-- Status: Accepted (spike completed 2026-11-06; three points still unverified, listed below)
-- Date: 2026-11-05, updated 2026-11-06
+- Status: Accepted (spike completed 2026-11-06; dbt verified 2026-11-08; two points still unverified, listed below)
+- Date: 2026-11-05, updated 2026-11-08
 - Deciders: Shadman Arko
 
 ## Context
@@ -21,6 +21,8 @@ We want a real lakehouse engine (Delta Lake, SQL warehouse, catalog). The owner 
 | External location on `s3://<bucket>/landing` | Works with "Force create". Read, List and Path Exists pass. |
 | Read all landing files by `s3://` path with Spark | Works: 146,486 rows, identical to the local Bronze table |
 | File events (queues created in our AWS account) | Not set up. Optional, and it would widen access, so we skipped it. |
+| Bronze load with `COPY INTO` (`databricks/load_bronze.sql`) | Works after enabling the `timestampNtz` table feature. 48,326 / 46,621 / 51,539 rows; a second run loads 0 rows (idempotent). |
+| dbt from a laptop to the Free Edition SQL warehouse (personal access token) | Works. `dbt debug` passes and `dbt build --target databricks` gives PASS=16 (4 models, 12 tests). |
 
 Observed facts to keep in mind:
 - The Databricks workspace is in **US East (Ohio)**; our bucket is in **eu-central-1 (Frankfurt)**. Reads work across regions. For real European data this would need a data-residency decision and would add transfer cost.
@@ -28,7 +30,7 @@ Observed facts to keep in mind:
 - Databricks requires the role to trust itself. Terraform therefore applies in two phases (see `infra/terraform/iam.tf`).
 
 ## Decision
-Build against Free Edition and read the S3 landing zone natively through a Unity Catalog storage credential and external location. The S3-to-Bronze load stays behind one interface, so it can be swapped for a Databricks Volume upload or Auto Loader file notifications if needed. dbt models are engine-agnostic SQL and do not change.
+Build against Free Edition and read the S3 landing zone natively through a Unity Catalog storage credential and external location. The S3-to-Bronze load stays behind one interface, so it can be swapped for a Databricks Volume upload or Auto Loader file notifications if needed. dbt models are almost engine-agnostic SQL: moving from DuckDB to Databricks needed only two small changes (`cast(... as string)` instead of `varchar`, and the `timestampNtz` table property). `profiles.yml` holds both targets; credentials come from environment variables.
 
 ## Consequences
 - Zero licence cost. The proper IAM-role pattern is demonstrated and defined in Terraform; no AWS keys are stored in Databricks.
@@ -36,6 +38,6 @@ Build against Free Edition and read the S3 landing zone natively through a Unity
 - Free Edition has one 2X-Small SQL warehouse and a daily quota; compute stops for the day when the quota is exceeded.
 
 ## Still unverified
-- Whether dbt (running on a laptop or in Airflow) can connect to the Free Edition SQL warehouse with a personal access token.
+- Whether dbt can connect from inside the Airflow container (verified from a laptop only). Personal access tokens are short-lived and must be supplied to the container as a secret.
 - Whether Auto Loader works in directory-listing mode without file events.
 - Whether the Databricks Terraform provider can manage Free Edition resources. The AWS side is already in Terraform; the Databricks credential and location were created in the UI.

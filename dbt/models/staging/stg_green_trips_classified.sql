@@ -4,13 +4,13 @@ with base as (
 
     select
         md5(concat_ws('|',
-            coalesce(cast(VendorID as varchar), ''),
-            coalesce(cast(lpep_pickup_datetime as varchar), ''),
-            coalesce(cast(lpep_dropoff_datetime as varchar), ''),
-            coalesce(cast(PULocationID as varchar), ''),
-            coalesce(cast(DOLocationID as varchar), ''),
-            coalesce(cast(trip_distance as varchar), ''),
-            coalesce(cast(total_amount as varchar), '')
+            coalesce(cast(VendorID as string), ''),
+            coalesce(cast(lpep_pickup_datetime as string), ''),
+            coalesce(cast(lpep_dropoff_datetime as string), ''),
+            coalesce(cast(PULocationID as string), ''),
+            coalesce(cast(DOLocationID as string), ''),
+            coalesce(cast(trip_distance as string), ''),
+            coalesce(cast(total_amount as string), '')
         )) as trip_id,
         *
     from {{ source('bronze', 'green_trips_raw') }}

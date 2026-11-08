@@ -7,6 +7,9 @@ test-paths: ["tests"]
 
 models:
   nyc_taxi:
+    # Databricks only: the TLC times are timestamp_ntz, which Delta needs switched on per table.
+    +tblproperties:
+      delta.feature.timestampNtz: supported
     staging:
       +materialized: table
       +schema: staging

@@ -1,6 +1,16 @@
 nyc_taxi:
-  target: dev
+  target: dev # default: local DuckDB. Use --target databricks for Databricks.
   outputs:
     dev:
       type: duckdb
       path: ../data/warehouse.duckdb
+
+    databricks:
+      type: databricks
+      catalog: workspace
+      schema: dbt
+      # Connection details come from environment variables, never from this file.
+      host: "{{ env_var('DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+      threads: 1
