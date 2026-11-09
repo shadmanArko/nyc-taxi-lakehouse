@@ -1,5 +1,7 @@
 # Requirements
 
+> These are the requirements as written before the build. What was delivered, partly delivered and not delivered is tracked in the "Design versus delivered" table in the [README](../../README.md). Where a requirement changed, the change is noted inline.
+
 ## Functional requirements
 
 | ID | Requirement | Priority |
@@ -8,7 +10,7 @@
 | FR-2 | Ingestion is idempotent: re-running a month does not duplicate data | Must |
 | FR-3 | Bronze preserves raw records plus load metadata (source file, load timestamp, batch id) | Must |
 | FR-4 | Silver enforces types, removes duplicates, and quarantines invalid rows with a reason code | Must |
-| FR-5 | Gold exposes `daily_revenue` (service_date, trip_count, total_revenue, avg_fare) | Must |
+| FR-5 | Gold exposes daily revenue per service date. *Changed after profiling:* the columns are `service_date`, `trip_count`, `gross_revenue`, `adjustments`, `net_revenue` (no `avg_fare`). | Must |
 | FR-6 | Rejected rows are counted and reported per run | Must |
 | FR-7 | Any month can be backfilled by passing a date range | Must |
 | FR-8 | A dashboard shows daily revenue and trips | Should |

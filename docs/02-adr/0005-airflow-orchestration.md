@@ -19,3 +19,10 @@ Airflow, run locally in Docker (Astro CLI or docker-compose). MWAA is documented
 ## Consequences
 - Industry-standard skill demonstrated; clean backfill story.
 - Local runtime means no always-on scheduler; demos run on demand.
+
+## Amendment 2026-11-09
+Built with docker-compose (Airflow `standalone`, an image that installs the project from `uv.lock` into its own environment). Differences from the plan:
+- **Plain `BashOperator` tasks, no Cosmos.** Three tasks (`download`, `load_bronze`, `dbt_build`) run the same commands used by hand. Cosmos was not needed for four models.
+- **`max_active_runs=1`** was added after a manual and a scheduled run overlapped and locked the DuckDB file. Retries (2, one minute apart) recovered that run.
+- **Not done:** backfill by date range (the months are fixed in the download step); real failure alerts (the callback only prints a message).
+- **Scope:** the DAG runs the local DuckDB pipeline only. Running the Databricks path from Airflow is still open (ADR-0003, "Still unverified").

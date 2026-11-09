@@ -3,8 +3,8 @@
 | | |
 |---|---|
 | Owner | Shadman Arko |
-| Status | Draft v0.1 |
-| Last updated | 2026-11-05 |
+| Status | v0.2: definitions confirmed after profiling the data; see the delivered-vs-planned scorecard in the [README](../../README.md) |
+| Last updated | 2026-11-09 |
 
 ## 1. Problem
 
@@ -35,8 +35,8 @@ Analysts at a taxi-fleet operator need a daily, trusted view of revenue and trip
 ## 5. Scope (v1)
 
 - Source: NYC TLC Green Taxi trip records, Jan–Mar 2025, extensible to any month.
-- Output: `gold.daily_revenue` plus a dashboard.
-- Environments: `dev` and `prod`.
+- Output: the daily revenue table `gold_daily_revenue` (built); a dashboard is still to do.
+- Environments: `dev` only so far. `prod` is future work.
 
 ## 6. Success metrics
 
@@ -49,11 +49,17 @@ Analysts at a taxi-fleet operator need a daily, trusted view of revenue and trip
 | Test coverage: every Silver/Gold model has schema and uniqueness tests | 100% |
 | Fresh environment from zero via Terraform + CI | One documented command path |
 
-## 7. Key business definitions (to be confirmed in data model doc)
+## 7. Key business definitions (confirmed 2026-11-09; the first draft is replaced)
+
+The first draft defined revenue as the sum of `total_amount` and a valid trip as one with non-negative amounts and a pickup date inside the file's month. Profiling the three real files changed that:
 
 - **Service date:** calendar date of `lpep_pickup_datetime`.
-- **Revenue:** sum of `total_amount` for valid trips (includes tips, tolls, surcharges).
-- **Valid trip:** non-null pickup/dropoff, dropoff after pickup, non-negative amounts, pickup date within the file's month ± tolerance.
+- **Revenue:** `total_amount` minus `tip_amount`. Card tips are recorded and cash tips are not, so including tips would make card and cash trips incomparable.
+- **Gross revenue / adjustments / net revenue:** revenue of trips that are not adjustments; revenue of trips with a negative total; their sum. Negative amounts are kept and reported, not dropped. *(Assumption: they are refunds or disputes. A real finance team must confirm.)*
+- **Valid trip:** pickup, dropoff and amount are present, the trip does not end before it starts, and it is not a duplicate. Trips outside their file's month are kept and grouped by their own pickup date, which leaves a few partial edge days.
+- **Missing descriptive fields:** trips with an empty rate code, passenger count, payment type and store-and-forward flag are kept and flagged (`fields_missing`), because they carry real revenue.
+
+Full column-level detail: [data-model.md](../01-architecture/data-model.md).
 
 ## 8. Risks and assumptions
 

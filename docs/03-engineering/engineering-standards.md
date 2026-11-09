@@ -1,5 +1,23 @@
 # Engineering Standards
 
+These are the **target** standards, written before the build. The table below says which are actually in place as of 2026-11-09, so the rest of the page is not read as a claim about the current state.
+
+| Standard | In place? |
+|---|---|
+| Python 3.13 with `uv`, locked dependencies, CI installs the lock frozen | Yes |
+| Conventional Commit messages (`feat:`, `docs:`, `infra:`, `ci:`) | Yes |
+| Unit tests (pytest) and dbt tests, run by CI on every push | Yes (5 pytest tests, 12 dbt tests) |
+| CI runs the pipeline end to end (download, Bronze, dbt build) | Yes, on the real public data rather than a fixture |
+| No secrets in the repo; tokens come from environment variables | Yes |
+| Infrastructure as code | Partly: S3 and the Databricks IAM role; the Databricks credential and location were created in the UI |
+| Short-lived branches, pull requests, branch protection | No. Work was committed directly to `main`. |
+| Ruff, type checking, SQLFluff, pre-commit hooks | No |
+| dbt-expectations, model contracts, tflint, checkov | No |
+| `terraform plan` in CI, GitHub OIDC, deploy to `prod` | No |
+| Runbooks, failure alerts, AWS budget alert | No |
+| S3 encryption with SSE-KMS | No: SSE-S3 is used (ADR-0007) |
+| Dependency and secret scanning on the repository | Not checked |
+
 ## Workflow
 
 - Trunk-based: short-lived branches off `main`, merged by pull request; `main` is always deployable.
