@@ -20,7 +20,7 @@ We want a real lakehouse engine (Delta Lake, SQL warehouse, catalog). The owner 
 | Storage credential from an AWS IAM role | Works. Assume Role, Self Assume Role and External ID checks pass. |
 | External location on `s3://<bucket>/landing` | Works with "Force create". Read, List and Path Exists pass. |
 | Read all landing files by `s3://` path with Spark | Works: 146,486 rows, identical to the local Bronze table |
-| File events (queues created in our AWS account) | Not set up. Optional, and it would widen access, so we skipped it. |
+| File events (queues created in our AWS account) | Not working, by choice. The external location page shows "Enable file events: Enabled, Automatic: Yes" (set when we used "Force create"), but the two validation checks that create the notification queues failed, because we did not give the role the extra AWS permissions. Granting them would widen access, so we skipped it and do not rely on file events. Whether the setting does anything is untested. |
 | Bronze load with `COPY INTO` (`databricks/load_bronze.sql`) | Works after enabling the `timestampNtz` table feature. 48,326 / 46,621 / 51,539 rows; a second run loads 0 rows (idempotent). |
 | dbt from a laptop to the Free Edition SQL warehouse (personal access token) | Works. `dbt debug` passes and `dbt build --target databricks` gives PASS=16 (4 models, 12 tests). |
 
@@ -34,7 +34,7 @@ Build against Free Edition and read the S3 landing zone natively through a Unity
 
 ## Consequences
 - Zero licence cost. The proper IAM-role pattern is demonstrated and defined in Terraform; no AWS keys are stored in Databricks.
-- Without file events, Databricks does not react to new files by itself. The Airflow schedule decides when to load, which is enough for a daily batch.
+- We do not rely on file events, so Databricks does not react to new files by itself. The Airflow schedule decides when to load, which is enough for a daily batch.
 - Free Edition has one 2X-Small SQL warehouse and a daily quota; compute stops for the day when the quota is exceeded.
 
 ## Still unverified
