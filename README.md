@@ -83,7 +83,7 @@ Across the three months: **$3,027,332 gross, −$6,439 adjustments, $3,020,893 n
 ## Chapter 5. Design: architecture and trade-offs
 
 ```mermaid
-flowchart LR
+flowchart TB
     TLC[NYC TLC<br/>public Parquet] -->|download + checksum| RAW[data/raw]
     RAW -->|upload| S3[(S3 landing<br/>raw, never overwritten)]
     RAW -->|load| BD[(Bronze: DuckDB)]
@@ -238,6 +238,8 @@ Two design choices also changed on contact with reality: dbt models are plain ta
 | <a href="docs/images/aws/08-terminal-s3-ls.png"><img src="docs/images/aws/08-terminal-s3-ls.png" width="440" alt="Terminal listing of the bucket"></a><br><sub>The same files from the command line</sub> | <a href="docs/images/aws/09-terraform-state-list.png"><img src="docs/images/aws/09-terraform-state-list.png" width="440" alt="terraform state list"></a><br><sub>Everything Terraform manages</sub> |
 | <a href="docs/images/aws/10-terraform-no-changes.png"><img src="docs/images/aws/10-terraform-no-changes.png" width="440" alt="terraform plan: no changes"></a><br><sub>Code and real infrastructure agree</sub> | <a href="docs/images/airflow/05-run-detail.png"><img src="docs/images/airflow/05-run-detail.png" width="440" alt="One Airflow run with all tasks green"></a><br><sub>One full Airflow run</sub> |
 | <a href="docs/images/databricks/02-bronze-sample-data.png"><img src="docs/images/databricks/02-bronze-sample-data.png" width="440" alt="Bronze sample data with _source_file and _ingested_at columns"></a><br><sub>Bronze rows carry their source file and load time</sub> | <a href="docs/images/databricks/06-external-location.png"><img src="docs/images/databricks/06-external-location.png" width="440" alt="Databricks external location pointing at the S3 landing path, read-only"></a><br><sub>External location on the S3 landing path, read-only</sub> |
+| <a href="docs/images/github/05-actions-all-green.png"><img src="docs/images/github/05-actions-all-green.png" width="440" alt="GitHub Actions: ten CI runs, all green"></a><br><sub>Ten CI runs, all green (the failed one was re-run)</sub> | <a href="docs/images/github/04-commits.png"><img src="docs/images/github/04-commits.png" width="440" alt="Commit history with Conventional Commit messages"></a><br><sub>Small commits with clear messages</sub> |
+| <a href="docs/images/github/03-adr-folder.png"><img src="docs/images/github/03-adr-folder.png" width="440" alt="The docs/02-adr folder with seven decision records and the index"></a><br><sub>The decision records and their index</sub> | |
 
 </details>
 

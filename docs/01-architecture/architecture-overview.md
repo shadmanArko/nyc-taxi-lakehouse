@@ -14,7 +14,7 @@ flowchart LR
 ## Containers and data flow
 
 ```mermaid
-flowchart LR
+flowchart TB
     TLC[NYC TLC<br/>public Parquet] -->|download + checksum| RAW[data/raw]
     RAW -->|upload, never overwrite| S3[(S3 landing<br/>raw files)]
     RAW -->|load| BD[(Bronze: DuckDB)]
