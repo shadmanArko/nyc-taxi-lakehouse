@@ -107,6 +107,9 @@ flowchart TB
 | Infrastructure | Terraform | Console clicks, CloudFormation | Rebuildable and destroyable. AWS access is time-limited. | [ADR-0006](docs/02-adr/0006-terraform-iac.md) |
 | Raw storage | S3, immutable landing | Load straight into the lakehouse | An independent, auditable copy | [ADR-0007](docs/02-adr/0007-s3-landing-zone.md) |
 | Compute | Databricks Free Edition | Paid workspace, open-source Spark | No cost; limits were unknown, so I tested them | [ADR-0003](docs/02-adr/0003-databricks-free-edition-first.md) |
+| Build approach | Local first (DuckDB, Docker, uv), then cloud | Build straight on AWS and Databricks | Prove the design for free; change one thing at a time | [ADR-0008](docs/02-adr/0008-local-first-duckdb-docker-uv.md) |
+
+The full map from each requirement to the tool that meets it, and the reason for the build order, is in the [decision journey](docs/01-architecture/decision-journey.md).
 
 ## Chapter 6. Build in thin slices, local first
 

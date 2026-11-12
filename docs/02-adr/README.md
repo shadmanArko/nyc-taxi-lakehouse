@@ -11,5 +11,6 @@ We record significant decisions as ADRs (format: [Michael Nygard](https://cognit
 | [0005](0005-airflow-orchestration.md) | Airflow for orchestration | Accepted |
 | [0006](0006-terraform-iac.md) | Terraform for infrastructure | Accepted |
 | [0007](0007-s3-landing-zone.md) | S3 as immutable landing zone | Accepted |
+| [0008](0008-local-first-duckdb-docker-uv.md) | Local-first with DuckDB, Docker and uv | Accepted |
 
 Template: [0000-template.md](0000-template.md)
